@@ -1,0 +1,7 @@
+# Local environment variables
+.env
+.env.local
+.env.*.local
+
+# Exceptions (Do NOT ignore the template file)
+!.env.example

@@ -34,5 +34,5 @@ async def upload_pdf(file: UploadFile = File(...)):
         "filename": file.filename,
         "saved_as": unique_name,
         "text_length": len(extracted_text),
-        "preview": extracted_text[:1000]
+      
     }

@@ -1,16 +1,18 @@
 from fastapi import FastAPI
+
 from app.api.upload import router as upload_router
+from app.api.summarize import router as summarize_router
 
 app = FastAPI(
-    title="LegalLens AI",
-    version="1.0.0"
+    title="LegalLens AI"
 )
 
 app.include_router(upload_router)
+app.include_router(summarize_router)
 
 
 @app.get("/")
 def home():
     return {
-        "message": "LegalLens AI Backend Running"
+        "message": "LegalLens AI Running"
     }
