@@ -39,3 +39,34 @@ def generate_summary(document_text):
     )
 
     return response.choices[0].message.content
+def answer_question(document_text, question):
+
+    prompt = f"""
+    You are a legal assistant.
+
+    Answer ONLY using the document.
+
+    If answer is not available,
+    say:
+    Information not found in document.
+
+    DOCUMENT:
+
+    {document_text[:12000]}
+
+    QUESTION:
+
+    {question}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response.choices[0].message.content
