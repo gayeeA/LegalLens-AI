@@ -70,3 +70,67 @@ def answer_question(document_text, question):
     )
 
     return response.choices[0].message.content
+def analyze_risks(document_text):
+
+    prompt = f"""
+    You are a legal expert.
+
+    Analyze this document.
+
+    Return:
+
+    1. Risk Score (Low/Medium/High)
+
+    2. Major Risks
+
+    3. Financial Risks
+
+    4. Legal Risks
+
+    DOCUMENT:
+
+    {document_text[:12000]}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response.choices[0].message.content
+def extract_obligations(document_text):
+
+    prompt = f"""
+    Extract obligations from this legal document.
+
+    Return:
+
+    Tenant Obligations
+
+    Landlord Obligations
+
+    Financial Obligations
+
+    Compliance Requirements
+
+    DOCUMENT:
+
+    {document_text[:12000]}
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response.choices[0].message.content
