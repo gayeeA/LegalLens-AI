@@ -28,7 +28,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 w-full bg-white border-b border-gray-100 backdrop-blur-lg bg-opacity-95 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -234,8 +234,9 @@ const UploadSection = ({ onUpload, loading }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-2xl mx-auto px-4 py-16"
+      className="w-full px-4 sm:px-6 lg:px-8 py-16"
     >
+      <div className="max-w-2xl mx-auto">
       {!file ? (
         <div
           onDragEnter={handleDrag}
@@ -331,6 +332,7 @@ const UploadSection = ({ onUpload, loading }) => {
           ) : null}
         </motion.div>
       )}
+      </div>
     </motion.div>
   );
 };
@@ -595,6 +597,11 @@ export default function App() {
     },
   ];
 
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setError("");
+  };
+
   // Render different views
   return (
     <div className="min-h-screen bg-gray-50">
@@ -618,25 +625,25 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-7xl mx-auto px-4 py-12"
+            className="w-full py-12"
           >
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 mx-4 sm:mx-6 lg:mx-8">
                 {error}
               </div>
             )}
 
             {/* Main Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 h-full">
               {/* Left Panel - Tabs */}
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 px-4 sm:px-6 lg:px-8 h-full">
                 <div className="bg-white rounded-2xl p-8 border border-gray-100">
                   {/* Tabs */}
                   <TabsComponent
                     tabs={tabs}
                     activeTab={activeTab}
-                    setActiveTab={setActiveTab}
+                    setActiveTab={handleTabChange}
                   />
 
                   {/* Tab Content */}
@@ -654,10 +661,10 @@ export default function App() {
                             Plain English Summary
                           </h3>
                           <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                            <p className="text-gray-700 leading-relaxed">
+                            <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">
                               {analysis.summary ||
                                 "No summary available"}
-                            </p>
+                            </div>
                           </div>
                         </div>
 
@@ -720,14 +727,18 @@ export default function App() {
 
                         {/* Risk Cards */}
                         <div className="space-y-4">
-                          {analysis.risk_analysis?.critical_clauses?.map(
-                            (risk, i) => (
-                              <RiskCard key={i} risk={risk} />
+                          {analysis.risk_analysis?.critical_clauses &&
+                          analysis.risk_analysis.critical_clauses.length > 0 ? (
+                            analysis.risk_analysis.critical_clauses.map(
+                              (risk, i) => (
+                                <RiskCard key={i} risk={risk} />
+                              )
                             )
-                          ) || (
-                            <p className="text-gray-500">
-                              No risks identified
-                            </p>
+                          ) : (
+                            <div className="text-center py-12">
+                              <AlertTriangle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                              <p className="text-gray-500">No risks identified</p>
+                            </div>
                           )}
                         </div>
                       </motion.div>
@@ -748,22 +759,28 @@ export default function App() {
                             Your Obligations
                           </h3>
                           <div className="space-y-3">
-                            {analysis.obligations?.your_obligations?.map(
-                              (obl, i) => (
-                                <div
-                                  key={i}
-                                  className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200"
-                                >
-                                  <Clock className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                                  <div className="text-sm text-gray-700">
-                                    {obl}
+                            {analysis.obligations?.your_obligations &&
+                            analysis.obligations.your_obligations.length > 0 ? (
+                              analysis.obligations.your_obligations.map(
+                                (obl, i) => (
+                                  <div
+                                    key={i}
+                                    className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                                  >
+                                    <Clock className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div className="text-sm text-gray-700">
+                                      {obl}
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               )
-                            ) || (
-                              <p className="text-gray-500 text-sm">
-                                No obligations found
-                              </p>
+                            ) : (
+                              <div className="text-center py-8">
+                                <Clock className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                                <p className="text-gray-500 text-sm">
+                                  No obligations found
+                                </p>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -774,22 +791,29 @@ export default function App() {
                             Other Party Obligations
                           </h3>
                           <div className="space-y-3">
-                            {analysis.obligations?.other_party_obligations?.map(
-                              (obl, i) => (
-                                <div
-                                  key={i}
-                                  className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200"
-                                >
-                                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                                  <div className="text-sm text-gray-700">
-                                    {obl}
+                            {analysis.obligations?.other_party_obligations &&
+                            analysis.obligations.other_party_obligations.length >
+                              0 ? (
+                              analysis.obligations.other_party_obligations.map(
+                                (obl, i) => (
+                                  <div
+                                    key={i}
+                                    className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200"
+                                  >
+                                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                    <div className="text-sm text-gray-700">
+                                      {obl}
+                                    </div>
                                   </div>
-                                </div>
+                                )
                               )
-                            ) || (
-                              <p className="text-gray-500 text-sm">
-                                No obligations found
-                              </p>
+                            ) : (
+                              <div className="text-center py-8">
+                                <CheckCircle className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                                <p className="text-gray-500 text-sm">
+                                  No obligations found
+                                </p>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -805,12 +829,23 @@ export default function App() {
                         exit={{ opacity: 0, y: -10 }}
                         className="flex flex-col h-96"
                       >
+                        {/* Error Alert */}
+                        {error && (
+                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-start gap-2">
+                            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                            <span>{error}</span>
+                          </div>
+                        )}
+
                         {/* Messages */}
                         <div className="flex-1 overflow-y-auto mb-6 space-y-4 bg-gray-50 rounded-lg p-4 border border-gray-200">
                           {messages.length === 0 ? (
                             <div className="text-center text-gray-500 py-12">
                               <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                              <p>Ask questions about the document</p>
+                              <p className="text-sm">Ask questions about the document</p>
+                              <p className="text-xs text-gray-400 mt-2">
+                                E.g., "What are my payment obligations?" or "What are the risks?"
+                              </p>
                             </div>
                           ) : (
                             messages.map((msg, i) => (
@@ -831,10 +866,33 @@ export default function App() {
                                       : "bg-white border border-gray-200 text-gray-900"
                                   }`}
                                 >
-                                  <p className="text-sm">{msg.content}</p>
+                                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                                 </div>
                               </motion.div>
                             ))
+                          )}
+                          {loading && (
+                            <div className="flex justify-start">
+                              <div className="bg-white border border-gray-200 rounded-lg px-4 py-2">
+                                <div className="flex gap-2">
+                                  <motion.div
+                                    animate={{ opacity: [0.5, 1] }}
+                                    transition={{ duration: 0.6, repeat: Infinity }}
+                                    className="w-2 h-2 bg-gray-400 rounded-full"
+                                  />
+                                  <motion.div
+                                    animate={{ opacity: [1, 0.5] }}
+                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                                    className="w-2 h-2 bg-gray-400 rounded-full"
+                                  />
+                                  <motion.div
+                                    animate={{ opacity: [0.5, 1] }}
+                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                                    className="w-2 h-2 bg-gray-400 rounded-full"
+                                  />
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </div>
 
@@ -845,10 +903,11 @@ export default function App() {
                             value={question}
                             onChange={(e) => setQuestion(e.target.value)}
                             onKeyPress={(e) =>
-                              e.key === "Enter" && handleAsk()
+                              e.key === "Enter" && !loading && handleAsk()
                             }
                             placeholder="Ask anything about this document..."
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            disabled={loading}
+                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100 disabled:text-gray-500 transition"
                           />
                           <button
                             onClick={handleAsk}
@@ -865,7 +924,7 @@ export default function App() {
               </div>
 
               {/* Right Panel - Sticky Sidebar */}
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 px-4 sm:px-6 lg:px-8 h-full">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
