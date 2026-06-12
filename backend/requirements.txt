@@ -3,5 +3,5 @@ uvicorn
 python-multipart
 pymupdf
 
-openai
+groq
 python-dotenv
